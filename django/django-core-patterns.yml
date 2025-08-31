@@ -1,0 +1,328 @@
+metadata:
+  library_id: "django-core-patterns"
+  version: "1.0.0"
+  maintainer: "podmortem-community"
+  compatibility: ["django-3.x", "django-4.x", "django-5.x"]
+  dependencies: []
+
+categories:
+  - web_framework
+  - orm
+  - templates
+  - authentication
+  - middleware
+  - migrations
+
+patterns:
+  - id: "django_does_not_exist_error"
+    name: "Django Model DoesNotExist Error"
+    
+    primary_pattern:
+      regex: "DoesNotExist.*matching query does not exist|.*\\.DoesNotExist|Model.*does not exist"
+      confidence: 0.92
+    
+    secondary_patterns:
+      - regex: "get\\(\\)|filter\\(\\)|objects\\."
+        weight: 0.5
+        proximity_window: 15
+      - regex: "django\\.core\\.exceptions"
+        weight: 0.4
+        proximity_window: 20
+    
+    severity: "MEDIUM"
+    category: ["orm", "database"]
+    
+    remediation:
+      description: "Django model query returned no results"
+      common_causes:
+        - "Query for non-existent database record"
+        - "Incorrect filter parameters"
+        - "Database synchronization issues"
+        - "Missing test data or fixtures"
+      
+      suggested_commands:
+        - "Use get_or_404() for views that should return 404"
+        - "Use try/except blocks around .get() calls"
+        - "Check filter parameters and database contents"
+        - "Use .filter().exists() to check existence first"
+      
+      documentation_links:
+        - "https://docs.djangoproject.com/en/stable/ref/models/querysets/"
+        - "https://docs.djangoproject.com/en/stable/topics/db/queries/"
+    
+    context_extraction:
+      lines_before: 10
+      lines_after: 5
+      include_stack_trace: true
+      highlight_keywords: ["DoesNotExist", "get()", "filter()"]
+
+  - id: "django_integrity_error"
+    name: "Django Database Integrity Error"
+    
+    primary_pattern:
+      regex: "IntegrityError.*UNIQUE constraint failed|IntegrityError.*duplicate key|IntegrityError.*NOT NULL constraint"
+      confidence: 0.95
+    
+    secondary_patterns:
+      - regex: "django\\.db\\.utils"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "UNIQUE|PRIMARY KEY|FOREIGN KEY"
+        weight: 0.6
+        proximity_window: 25
+      - regex: "save\\(\\)|create\\(\\)|bulk_create"
+        weight: 0.4
+        proximity_window: 30
+    
+    severity: "HIGH"
+    category: ["database", "constraints"]
+    
+    remediation:
+      description: "Database constraint violation in Django model operation"
+      common_causes:
+        - "Attempting to create duplicate unique values"
+        - "Missing required fields (NOT NULL constraint)"
+        - "Foreign key constraint violations"
+        - "Concurrent database operations"
+      
+      suggested_commands:
+        - "Check unique constraints in model definitions"
+        - "Use get_or_create() to avoid duplicates"
+        - "Validate required fields before saving"
+        - "Review database migration files"
+      
+      documentation_links:
+        - "https://docs.djangoproject.com/en/stable/ref/models/constraints/"
+        - "https://docs.djangoproject.com/en/stable/topics/db/models/"
+    
+    context_extraction:
+      lines_before: 15
+      lines_after: 10
+      include_stack_trace: true
+
+  - id: "django_template_syntax_error"
+    name: "Django Template Syntax Error"
+    
+    primary_pattern:
+      regex: "TemplateSyntaxError|Invalid block tag|template.*syntax.*error|Invalid filter"
+      confidence: 0.88
+    
+    secondary_patterns:
+      - regex: "\\{%.*%\\}|\\{\\{.*\\}\\}"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "\\.html|\\.htm|template"
+        weight: 0.4
+        proximity_window: 25
+      - regex: "django\\.template"
+        weight: 0.3
+        proximity_window: 30
+    
+    severity: "MEDIUM"
+    category: ["templates", "syntax"]
+    
+    remediation:
+      description: "Django template contains syntax errors"
+      common_causes:
+        - "Misspelled template tags or filters"
+        - "Unclosed template tags"
+        - "Invalid template variable syntax"
+        - "Missing template tag library loads"
+      
+      suggested_commands:
+        - "Check template tag spelling and syntax"
+        - "Ensure all template tags are properly closed"
+        - "Verify template tag libraries are loaded with {% load %}"
+        - "Use template debugging tools"
+      
+      documentation_links:
+        - "https://docs.djangoproject.com/en/stable/ref/templates/language/"
+        - "https://docs.djangoproject.com/en/stable/ref/templates/builtins/"
+    
+    context_extraction:
+      lines_before: 12
+      lines_after: 8
+      include_stack_trace: true
+
+  - id: "django_migration_error"
+    name: "Django Migration Error"
+    
+    primary_pattern:
+      regex: "MigrationSchemaMissing|Migration.*failed|migration.*error|CommandError.*migrate"
+      confidence: 0.90
+    
+    secondary_patterns:
+      - regex: "python manage\\.py migrate|makemigrations"
+        weight: 0.5
+        proximity_window: 30
+      - regex: "django_migrations|migration.*dependency"
+        weight: 0.6
+        proximity_window: 25
+      - regex: "OperationalError.*table|no such table"
+        weight: 0.4
+        proximity_window: 20
+    
+    severity: "HIGH"
+    category: ["migrations", "database"]
+    
+    remediation:
+      description: "Django database migration failed"
+      common_causes:
+        - "Missing migration dependencies"
+        - "Database schema inconsistencies"
+        - "Conflicting migrations"
+        - "Database connection issues during migration"
+      
+      suggested_commands:
+        - "Run python manage.py makemigrations to create missing migrations"
+        - "Check migration dependencies with --plan flag"
+        - "Use python manage.py migrate --fake-initial for existing databases"
+        - "Resolve migration conflicts manually"
+      
+      documentation_links:
+        - "https://docs.djangoproject.com/en/stable/topics/migrations/"
+        - "https://docs.djangoproject.com/en/stable/ref/django-admin/"
+    
+    context_extraction:
+      lines_before: 15
+      lines_after: 10
+      include_stack_trace: true
+
+  - id: "django_middleware_error"
+    name: "Django Middleware Error"
+    
+    primary_pattern:
+      regex: "MiddlewareNotUsed|middleware.*error|MIDDLEWARE.*failed|middleware.*exception"
+      confidence: 0.85
+    
+    secondary_patterns:
+      - regex: "MIDDLEWARE.*settings|django\\.middleware"
+        weight: 0.5
+        proximity_window: 25
+      - regex: "process_request|process_response|process_view"
+        weight: 0.4
+        proximity_window: 20
+      - regex: "settings\\.py"
+        weight: 0.3
+        proximity_window: 30
+    
+    severity: "MEDIUM"
+    category: ["middleware", "configuration"]
+    
+    remediation:
+      description: "Django middleware processing failed"
+      common_causes:
+        - "Incorrect middleware configuration in settings"
+        - "Middleware class import errors"
+        - "Middleware method exceptions"
+        - "Middleware ordering conflicts"
+      
+      suggested_commands:
+        - "Check MIDDLEWARE setting in settings.py"
+        - "Verify middleware class imports and paths"
+        - "Review middleware method implementations"
+        - "Test middleware ordering for dependencies"
+      
+      documentation_links:
+        - "https://docs.djangoproject.com/en/stable/topics/http/middleware/"
+        - "https://docs.djangoproject.com/en/stable/ref/middleware/"
+    
+    context_extraction:
+      lines_before: 15
+      lines_after: 8
+
+  - id: "django_url_pattern_error"
+    name: "Django URL Pattern Error"
+    
+    primary_pattern:
+      regex: "NoReverseMatch|Reverse for.*not found|URL.*pattern.*error|path.*not.*found"
+      confidence: 0.87
+    
+    secondary_patterns:
+      - regex: "urls\\.py|urlpatterns"
+        weight: 0.5
+        proximity_window: 25
+      - regex: "reverse\\(|url\\(|path\\("
+        weight: 0.6
+        proximity_window: 20
+      - regex: "django\\.urls"
+        weight: 0.4
+        proximity_window: 30
+    
+    severity: "MEDIUM"
+    category: ["urls", "routing"]
+    
+    remediation:
+      description: "Django URL pattern resolution failed"
+      common_causes:
+        - "Missing URL pattern definitions"
+        - "Incorrect URL name references"
+        - "URL pattern syntax errors"
+        - "Missing URL includes"
+      
+      suggested_commands:
+        - "Check URL pattern definitions in urls.py"
+        - "Verify URL names match reverse() calls"
+        - "Test URL patterns with django.urls.reverse()"
+        - "Check URL include statements"
+      
+      documentation_links:
+        - "https://docs.djangoproject.com/en/stable/topics/http/urls/"
+        - "https://docs.djangoproject.com/en/stable/ref/urlresolvers/"
+    
+    context_extraction:
+      lines_before: 12
+      lines_after: 8
+      include_stack_trace: true
+
+  - id: "django_settings_error"
+    name: "Django Settings Configuration Error"
+    
+    primary_pattern:
+      regex: "ImproperlyConfigured|settings.*error|DJANGO_SETTINGS_MODULE|settings.*not.*configured"
+      confidence: 0.93
+    
+    secondary_patterns:
+      - regex: "settings\\.py|django\\.conf"
+        weight: 0.5
+        proximity_window: 25
+      - regex: "SECRET_KEY|DEBUG|ALLOWED_HOSTS"
+        weight: 0.4
+        proximity_window: 30
+      - regex: "environment.*variable"
+        weight: 0.3
+        proximity_window: 20
+    
+    severity: "CRITICAL"
+    category: ["configuration", "settings"]
+    
+    remediation:
+      description: "Django settings configuration is invalid or missing"
+      common_causes:
+        - "Missing or invalid DJANGO_SETTINGS_MODULE"
+        - "Required settings not defined"
+        - "Invalid settings values"
+        - "Environment variable issues"
+      
+      suggested_commands:
+        - "Set DJANGO_SETTINGS_MODULE environment variable"
+        - "Check required settings like SECRET_KEY, ALLOWED_HOSTS"
+        - "Verify settings.py file exists and is valid Python"
+        - "Review environment-specific settings"
+      
+      documentation_links:
+        - "https://docs.djangoproject.com/en/stable/topics/settings/"
+        - "https://docs.djangoproject.com/en/stable/ref/settings/"
+    
+    context_extraction:
+      lines_before: 15
+      lines_after: 10
+      include_stack_trace: true
+
+related_patterns:
+  - id: "django_does_not_exist_error"
+    related_to: ["django_integrity_error"]
+  - id: "django_migration_error"
+    related_to: ["django_integrity_error", "django_settings_error"]
+  - id: "django_settings_error"
+    related_to: ["django_middleware_error", "django_url_pattern_error"]

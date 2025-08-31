@@ -1,0 +1,331 @@
+metadata:
+  library_id: "async-patterns"
+  version: "1.0.0"
+  maintainer: "podmortem-community"
+  compatibility: ["python-3.8+", "asyncio", "aiohttp", "tornado"]
+  dependencies: ["python-web-common-patterns"]
+
+categories:
+  - async_programming
+  - event_loops
+  - coroutines
+  - concurrent_execution
+
+patterns:
+  - id: "asyncio_event_loop_error"
+    name: "Asyncio Event Loop Error"
+    
+    primary_pattern:
+      regex: "RuntimeError.*cannot be called from a running event loop|RuntimeError.*There is no current event loop|RuntimeError.*Event loop is closed"
+      confidence: 0.93
+    
+    secondary_patterns:
+      - regex: "asyncio\\.run\\(|asyncio\\.get_event_loop"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "event.*loop|loop\\.run_until_complete"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "async def|await"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "HIGH"
+    category: ["event_loop", "runtime"]
+    
+    remediation:
+      description: "Asyncio event loop configuration or state error"
+      common_causes:
+        - "Calling asyncio.run() from within an existing event loop"
+        - "No event loop available in current thread"
+        - "Attempting to use closed event loop"
+        - "Mixing sync and async code incorrectly"
+      
+      suggested_commands:
+        - "Use await instead of asyncio.run() in async contexts"
+        - "Create event loop: asyncio.new_event_loop()"
+        - "Use asyncio.create_task() for concurrent execution"
+        - "Check if loop is running: asyncio.get_running_loop()"
+      
+      documentation_links:
+        - "https://docs.python.org/3/library/asyncio-eventloop.html"
+        - "https://docs.python.org/3/library/asyncio-task.html"
+    
+    context_extraction:
+      lines_before: 15
+      lines_after: 10
+      include_stack_trace: true
+
+  - id: "coroutine_never_awaited"
+    name: "Coroutine Never Awaited Warning"
+    
+    primary_pattern:
+      regex: "RuntimeWarning.*coroutine.*was never awaited|coroutine.*never.*awaited"
+      confidence: 0.88
+    
+    secondary_patterns:
+      - regex: "async def|coroutine"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "await|asyncio\\.create_task"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "function.*call|method.*call"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "MEDIUM"
+    category: ["coroutines", "memory_leaks"]
+    
+    remediation:
+      description: "Async function called but never awaited"
+      common_causes:
+        - "Calling async function without await"
+        - "Missing await keyword in function calls"
+        - "Fire-and-forget async operations"
+        - "Incorrect async function usage"
+      
+      suggested_commands:
+        - "Add await keyword: await async_function()"
+        - "Use asyncio.create_task() for background tasks"
+        - "Use asyncio.gather() for multiple coroutines"
+        - "Store task reference to prevent garbage collection"
+      
+      documentation_links:
+        - "https://docs.python.org/3/library/asyncio-task.html"
+        - "https://docs.python.org/3/reference/expressions.html#await"
+    
+    context_extraction:
+      lines_before: 10
+      lines_after: 8
+      include_stack_trace: true
+
+  - id: "asyncio_timeout_error"
+    name: "Asyncio Timeout Error"
+    
+    primary_pattern:
+      regex: "asyncio\\.TimeoutError|TimeoutError.*asyncio|asyncio.*timeout.*exceeded"
+      confidence: 0.90
+    
+    secondary_patterns:
+      - regex: "asyncio\\.wait_for|asyncio\\.timeout"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "timeout.*seconds|timeout.*\\d+"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "async.*with|asyncio\\.gather"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "MEDIUM"
+    category: ["timeouts", "performance"]
+    
+    remediation:
+      description: "Asyncio operation timed out"
+      common_causes:
+        - "Network requests taking too long"
+        - "Database queries exceeding timeout"
+        - "Insufficient timeout values"
+        - "Blocking operations in async code"
+      
+      suggested_commands:
+        - "Increase timeout values: asyncio.wait_for(coro, timeout=30)"
+        - "Add retry logic with exponential backoff"
+        - "Check for blocking I/O operations"
+        - "Use async-compatible libraries"
+      
+      documentation_links:
+        - "https://docs.python.org/3/library/asyncio-task.html#asyncio.wait_for"
+        - "https://docs.python.org/3/library/asyncio-exceptions.html"
+    
+    context_extraction:
+      lines_before: 12
+      lines_after: 8
+      include_stack_trace: true
+
+  - id: "aiohttp_client_error"
+    name: "AioHTTP Client Error"
+    
+    primary_pattern:
+      regex: "aiohttp\\.ClientError|ClientConnectorError|ClientTimeout|ServerDisconnectedError"
+      confidence: 0.89
+    
+    secondary_patterns:
+      - regex: "aiohttp\\.ClientSession|aiohttp\\.request"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "async.*with.*session|ClientSession\\("
+        weight: 0.5
+        proximity_window: 20
+      - regex: "http.*request|url.*request"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "MEDIUM"
+    category: ["http_client", "networking"]
+    
+    remediation:
+      description: "AioHTTP client request failed"
+      common_causes:
+        - "Network connectivity issues"
+        - "Server not responding or unreachable"
+        - "Request timeout exceeded"
+        - "SSL/TLS certificate problems"
+      
+      suggested_commands:
+        - "Add retry logic with aiohttp-retry"
+        - "Increase timeout values in ClientTimeout"
+        - "Check network connectivity and DNS resolution"
+        - "Use proper SSL context for HTTPS requests"
+      
+      documentation_links:
+        - "https://docs.aiohttp.org/en/stable/client_reference.html"
+        - "https://docs.aiohttp.org/en/stable/client_quickstart.html"
+    
+    context_extraction:
+      lines_before: 12
+      lines_after: 8
+      include_stack_trace: true
+
+  - id: "asyncio_task_exception"
+    name: "Asyncio Task Exception"
+    
+    primary_pattern:
+      regex: "Task exception was never retrieved|asyncio.*Task.*exception|Task.*cancelled"
+      confidence: 0.87
+    
+    secondary_patterns:
+      - regex: "asyncio\\.create_task|asyncio\\.Task"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "task\\.result\\(\\)|task\\.exception\\("
+        weight: 0.5
+        proximity_window: 20
+      - regex: "background.*task|concurrent.*task"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "HIGH"
+    category: ["tasks", "exception_handling"]
+    
+    remediation:
+      description: "Asyncio task failed with unhandled exception"
+      common_causes:
+        - "Background tasks with unhandled exceptions"
+        - "Not checking task results or exceptions"
+        - "Task cancellation not handled properly"
+        - "Fire-and-forget tasks without error handling"
+      
+      suggested_commands:
+        - "Check task exceptions: await task or task.result()"
+        - "Add exception handling to task functions"
+        - "Use task.add_done_callback() for completion handling"
+        - "Handle task cancellation with try/except CancelledError"
+      
+      documentation_links:
+        - "https://docs.python.org/3/library/asyncio-task.html#asyncio.Task"
+        - "https://docs.python.org/3/library/asyncio-exceptions.html"
+    
+    context_extraction:
+      lines_before: 15
+      lines_after: 10
+      include_stack_trace: true
+
+  - id: "asyncio_semaphore_error"
+    name: "Asyncio Semaphore Error"
+    
+    primary_pattern:
+      regex: "RuntimeError.*Semaphore.*released.*times|semaphore.*error|BoundedSemaphore.*error"
+      confidence: 0.85
+    
+    secondary_patterns:
+      - regex: "asyncio\\.Semaphore|asyncio\\.BoundedSemaphore"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "semaphore\\.acquire|semaphore\\.release"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "async.*with.*semaphore|concurrency.*limit"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "MEDIUM"
+    category: ["synchronization", "concurrency"]
+    
+    remediation:
+      description: "Asyncio semaphore usage error"
+      common_causes:
+        - "Releasing semaphore more times than acquired"
+        - "Not using async with for semaphore management"
+        - "Exception in semaphore-protected code block"
+        - "Incorrect semaphore initialization value"
+      
+      suggested_commands:
+        - "Use async with semaphore: for automatic management"
+        - "Ensure acquire/release pairs are balanced"
+        - "Add try/finally blocks for manual semaphore management"
+        - "Check semaphore initial value matches expected concurrency"
+      
+      documentation_links:
+        - "https://docs.python.org/3/library/asyncio-sync.html#asyncio.Semaphore"
+        - "https://docs.python.org/3/library/asyncio-sync.html"
+    
+    context_extraction:
+      lines_before: 12
+      lines_after: 8
+      include_stack_trace: true
+
+  - id: "asyncio_queue_error"
+    name: "Asyncio Queue Error"
+    
+    primary_pattern:
+      regex: "asyncio\\.QueueEmpty|asyncio\\.QueueFull|queue.*empty|queue.*full"
+      confidence: 0.86
+    
+    secondary_patterns:
+      - regex: "asyncio\\.Queue|asyncio\\.LifoQueue|asyncio\\.PriorityQueue"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "queue\\.get|queue\\.put|queue\\.get_nowait"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "producer.*consumer|async.*queue"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "LOW"
+    category: ["queues", "communication"]
+    
+    remediation:
+      description: "Asyncio queue operation failed"
+      common_causes:
+        - "Getting from empty queue without blocking"
+        - "Putting to full queue without blocking"
+        - "Queue size limitations reached"
+        - "Producer/consumer rate mismatch"
+      
+      suggested_commands:
+        - "Use await queue.get() instead of get_nowait()"
+        - "Increase queue maxsize or use unbounded queue"
+        - "Add queue size monitoring and backpressure"
+        - "Balance producer and consumer rates"
+      
+      documentation_links:
+        - "https://docs.python.org/3/library/asyncio-queue.html"
+        - "https://docs.python.org/3/library/asyncio-sync.html"
+    
+    context_extraction:
+      lines_before: 10
+      lines_after: 8
+      include_stack_trace: true
+
+related_patterns:
+  - id: "asyncio_event_loop_error"
+    related_to: ["coroutine_never_awaited", "asyncio_task_exception"]
+  - id: "coroutine_never_awaited"
+    related_to: ["asyncio_task_exception"]
+  - id: "asyncio_timeout_error"
+    related_to: ["aiohttp_client_error"]
+  - id: "asyncio_task_exception"
+    related_to: ["asyncio_semaphore_error", "asyncio_queue_error"]

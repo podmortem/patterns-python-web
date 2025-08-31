@@ -1,0 +1,373 @@
+metadata:
+  library_id: "flask-core-patterns"
+  version: "1.0.0"
+  maintainer: "podmortem-community"
+  compatibility: ["flask-1.x", "flask-2.x", "flask-3.x"]
+  dependencies: []
+
+categories:
+  - web_framework
+  - routing
+  - templates
+  - sessions
+  - blueprints
+  - extensions
+
+patterns:
+  - id: "flask_attribute_error_none_type"
+    name: "Flask AttributeError NoneType"
+    
+    primary_pattern:
+      regex: "AttributeError.*'NoneType'.*has no attribute|AttributeError.*NoneType.*object"
+      confidence: 0.85
+    
+    secondary_patterns:
+      - regex: "flask|@app\\.route|request\\.|session\\."
+        weight: 0.5
+        proximity_window: 20
+      - regex: "render_template|redirect|url_for"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "MEDIUM"
+    category: ["runtime", "variables"]
+    
+    remediation:
+      description: "Attempting to access attribute on None object in Flask application"
+      common_causes:
+        - "Uninitialized Flask app or request context"
+        - "Missing database query results"
+        - "Undefined template variables"
+        - "Session or request data not available"
+      
+      suggested_commands:
+        - "Check if variables are properly initialized before use"
+        - "Use app.app_context() or app.test_request_context() in testing"
+        - "Verify database queries return expected results"
+        - "Add null checks before accessing object attributes"
+      
+      documentation_links:
+        - "https://flask.palletsprojects.com/en/stable/appcontext/"
+        - "https://flask.palletsprojects.com/en/stable/reqcontext/"
+    
+    context_extraction:
+      lines_before: 10
+      lines_after: 8
+      include_stack_trace: true
+
+  - id: "flask_key_error"
+    name: "Flask KeyError"
+    
+    primary_pattern:
+      regex: "KeyError.*'\\w+'|KeyError.*missing.*key"
+      confidence: 0.88
+    
+    secondary_patterns:
+      - regex: "request\\.form|request\\.args|request\\.json"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "session\\[|flask\\.session"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "config\\[|app\\.config"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "MEDIUM"
+    category: ["request_handling", "forms"]
+    
+    remediation:
+      description: "Accessing non-existent key in Flask request data or session"
+      common_causes:
+        - "Missing form fields or query parameters"
+        - "Incorrect key names in request.form or request.args"
+        - "Session key not set before access"
+        - "Configuration key not defined"
+      
+      suggested_commands:
+        - "Use request.form.get() with default values"
+        - "Check if keys exist before accessing: 'key' in request.form"
+        - "Validate form data before processing"
+        - "Use session.get() instead of direct key access"
+      
+      documentation_links:
+        - "https://flask.palletsprojects.com/en/stable/api/#flask.Request"
+        - "https://flask.palletsprojects.com/en/stable/quickstart/#accessing-request-data"
+    
+    context_extraction:
+      lines_before: 12
+      lines_after: 8
+      include_stack_trace: true
+
+  - id: "flask_template_not_found"
+    name: "Flask Template Not Found"
+    
+    primary_pattern:
+      regex: "TemplateNotFound|template.*not.*found|jinja2\\.exceptions\\.TemplateNotFound"
+      confidence: 0.95
+    
+    secondary_patterns:
+      - regex: "render_template|render_template_string"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "templates/|template.*directory"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "\\.html|\\.htm|\\.jinja2"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "HIGH"
+    category: ["templates", "file_system"]
+    
+    remediation:
+      description: "Flask template file not found"
+      common_causes:
+        - "Template file doesn't exist in templates directory"
+        - "Incorrect template file name or path"
+        - "Templates directory not configured properly"
+        - "Template file permissions issues"
+      
+      suggested_commands:
+        - "Check if template file exists in templates/ directory"
+        - "Verify template file name spelling and case"
+        - "Check Flask app template_folder configuration"
+        - "Ensure template file has proper read permissions"
+      
+      documentation_links:
+        - "https://flask.palletsprojects.com/en/stable/templating/"
+        - "https://flask.palletsprojects.com/en/stable/api/#flask.Flask.template_folder"
+    
+    context_extraction:
+      lines_before: 10
+      lines_after: 5
+      include_stack_trace: true
+
+  - id: "flask_import_error"
+    name: "Flask Import Error"
+    
+    primary_pattern:
+      regex: "ImportError.*No module named|ModuleNotFoundError.*flask|ImportError.*flask"
+      confidence: 0.92
+    
+    secondary_patterns:
+      - regex: "from flask import|import flask"
+        weight: 0.6
+        proximity_window: 10
+      - regex: "pip install|requirements\\.txt"
+        weight: 0.4
+        proximity_window: 30
+      - regex: "virtual.*environment|venv|virtualenv"
+        weight: 0.3
+        proximity_window: 25
+    
+    severity: "CRITICAL"
+    category: ["dependencies", "environment"]
+    
+    remediation:
+      description: "Flask module or extension not found"
+      common_causes:
+        - "Flask not installed in current environment"
+        - "Wrong virtual environment activated"
+        - "Flask extension not installed"
+        - "Python path configuration issues"
+      
+      suggested_commands:
+        - "Install Flask: pip install flask"
+        - "Activate correct virtual environment"
+        - "Install missing extensions: pip install flask-extension-name"
+        - "Check Python path and PYTHONPATH environment variable"
+      
+      documentation_links:
+        - "https://flask.palletsprojects.com/en/stable/installation/"
+        - "https://flask.palletsprojects.com/en/stable/extensions/"
+    
+    context_extraction:
+      lines_before: 8
+      lines_after: 5
+      include_stack_trace: true
+
+  - id: "flask_werkzeug_error"
+    name: "Flask Werkzeug Server Error"
+    
+    primary_pattern:
+      regex: "werkzeug.*error|Werkzeug.*exception|Address already in use|OSError.*\\[Errno 48\\]|OSError.*\\[Errno 98\\]"
+      confidence: 0.87
+    
+    secondary_patterns:
+      - regex: "app\\.run\\(|flask run"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "port.*\\d+|localhost|127\\.0\\.0\\.1"
+        weight: 0.4
+        proximity_window: 25
+      - regex: "development.*server|debug.*mode"
+        weight: 0.3
+        proximity_window: 30
+    
+    severity: "MEDIUM"
+    category: ["server", "networking"]
+    
+    remediation:
+      description: "Flask development server error"
+      common_causes:
+        - "Port already in use by another process"
+        - "Permission denied binding to port"
+        - "Network interface configuration issues"
+        - "Firewall blocking port access"
+      
+      suggested_commands:
+        - "Use different port: app.run(port=5001)"
+        - "Kill process using port: lsof -ti:5000 | xargs kill -9"
+        - "Check available ports: netstat -an | grep LISTEN"
+        - "Run with different host: app.run(host='0.0.0.0')"
+      
+      documentation_links:
+        - "https://flask.palletsprojects.com/en/stable/server/"
+        - "https://werkzeug.palletsprojects.com/en/stable/"
+    
+    context_extraction:
+      lines_before: 10
+      lines_after: 8
+
+  - id: "flask_blueprint_error"
+    name: "Flask Blueprint Error"
+    
+    primary_pattern:
+      regex: "Blueprint.*error|blueprint.*not.*found|AssertionError.*blueprint|blueprint.*already.*registered"
+      confidence: 0.85
+    
+    secondary_patterns:
+      - regex: "Blueprint\\(|register_blueprint"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "from.*blueprint|import.*blueprint"
+        weight: 0.4
+        proximity_window: 20
+      - regex: "url_prefix|subdomain"
+        weight: 0.3
+        proximity_window: 25
+    
+    severity: "MEDIUM"
+    category: ["blueprints", "routing"]
+    
+    remediation:
+      description: "Flask Blueprint configuration or registration error"
+      common_causes:
+        - "Blueprint registered multiple times"
+        - "Blueprint import errors"
+        - "Circular import with blueprints"
+        - "Blueprint URL prefix conflicts"
+      
+      suggested_commands:
+        - "Check blueprint registration in app factory"
+        - "Verify blueprint import statements"
+        - "Avoid circular imports between blueprints"
+        - "Use unique names for blueprint registration"
+      
+      documentation_links:
+        - "https://flask.palletsprojects.com/en/stable/blueprints/"
+        - "https://flask.palletsprojects.com/en/stable/patterns/packages/"
+    
+    context_extraction:
+      lines_before: 12
+      lines_after: 8
+      include_stack_trace: true
+
+  - id: "flask_request_context_error"
+    name: "Flask Request Context Error"
+    
+    primary_pattern:
+      regex: "RuntimeError.*Working outside of.*context|RuntimeError.*application context|No.*context.*available"
+      confidence: 0.93
+    
+    secondary_patterns:
+      - regex: "request\\.|session\\.|g\\."
+        weight: 0.6
+        proximity_window: 15
+      - regex: "app_context|request_context"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "with app\\.|test_.*context"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "HIGH"
+    category: ["context", "runtime"]
+    
+    remediation:
+      description: "Flask code executed outside of application or request context"
+      common_causes:
+        - "Accessing request/session outside of view function"
+        - "Background tasks without proper context"
+        - "Testing without request context"
+        - "CLI commands without app context"
+      
+      suggested_commands:
+        - "Use with app.app_context(): for application context"
+        - "Use with app.test_request_context(): for testing"
+        - "Push context manually: ctx = app.app_context(); ctx.push()"
+        - "Use @with_appcontext decorator for CLI commands"
+      
+      documentation_links:
+        - "https://flask.palletsprojects.com/en/stable/appcontext/"
+        - "https://flask.palletsprojects.com/en/stable/reqcontext/"
+    
+    context_extraction:
+      lines_before: 15
+      lines_after: 10
+      include_stack_trace: true
+
+  - id: "flask_url_build_error"
+    name: "Flask URL Build Error"
+    
+    primary_pattern:
+      regex: "BuildError.*Could not build url|werkzeug\\.routing\\.BuildError|url_for.*error"
+      confidence: 0.90
+    
+    secondary_patterns:
+      - regex: "url_for\\("
+        weight: 0.6
+        proximity_window: 10
+      - regex: "@app\\.route|@bp\\.route"
+        weight: 0.4
+        proximity_window: 25
+      - regex: "endpoint.*not.*found"
+        weight: 0.5
+        proximity_window: 15
+    
+    severity: "MEDIUM"
+    category: ["routing", "urls"]
+    
+    remediation:
+      description: "Flask URL building failed for endpoint"
+      common_causes:
+        - "Endpoint name doesn't exist"
+        - "Missing required URL parameters"
+        - "Blueprint endpoint not properly namespaced"
+        - "Route not registered or imported"
+      
+      suggested_commands:
+        - "Check endpoint name spelling in url_for()"
+        - "Provide all required parameters to url_for()"
+        - "Use blueprint.endpoint format for blueprint routes"
+        - "Verify route function is imported and registered"
+      
+      documentation_links:
+        - "https://flask.palletsprojects.com/en/stable/api/#flask.url_for"
+        - "https://flask.palletsprojects.com/en/stable/quickstart/#url-building"
+    
+    context_extraction:
+      lines_before: 10
+      lines_after: 8
+      include_stack_trace: true
+
+related_patterns:
+  - id: "flask_attribute_error_none_type"
+    related_to: ["flask_key_error", "flask_request_context_error"]
+  - id: "flask_template_not_found"
+    related_to: ["flask_import_error"]
+  - id: "flask_request_context_error"
+    related_to: ["flask_url_build_error"]
+  - id: "flask_blueprint_error"
+    related_to: ["flask_import_error", "flask_url_build_error"]

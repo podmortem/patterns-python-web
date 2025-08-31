@@ -1,0 +1,376 @@
+metadata:
+  library_id: "fastapi-core-patterns"
+  version: "1.0.0"
+  maintainer: "podmortem-community"
+  compatibility: ["fastapi-0.68+", "fastapi-0.100+"]
+  dependencies: []
+
+categories:
+  - web_framework
+  - async
+  - validation
+  - dependency_injection
+  - openapi
+  - authentication
+
+patterns:
+  - id: "fastapi_validation_error"
+    name: "FastAPI Validation Error"
+    
+    primary_pattern:
+      regex: "ValidationError|pydantic.*ValidationError|422.*Unprocessable Entity|validation.*failed"
+      confidence: 0.92
+    
+    secondary_patterns:
+      - regex: "pydantic|BaseModel|Field\\("
+        weight: 0.5
+        proximity_window: 20
+      - regex: "type.*error|value.*error|missing.*field"
+        weight: 0.4
+        proximity_window: 15
+      - regex: "fastapi.*HTTPException.*422"
+        weight: 0.6
+        proximity_window: 25
+    
+    severity: "MEDIUM"
+    category: ["validation", "request_handling"]
+    
+    remediation:
+      description: "FastAPI request validation failed"
+      common_causes:
+        - "Invalid request body format or types"
+        - "Missing required fields in request"
+        - "Type conversion errors"
+        - "Pydantic model constraints not met"
+      
+      suggested_commands:
+        - "Check request body matches Pydantic model schema"
+        - "Verify all required fields are provided"
+        - "Review Field() constraints and validators"
+        - "Use Optional[] for non-required fields"
+      
+      documentation_links:
+        - "https://fastapi.tiangolo.com/tutorial/body/"
+        - "https://docs.pydantic.dev/latest/concepts/validators/"
+    
+    context_extraction:
+      lines_before: 12
+      lines_after: 8
+      include_stack_trace: true
+
+  - id: "fastapi_dependency_error"
+    name: "FastAPI Dependency Injection Error"
+    
+    primary_pattern:
+      regex: "DependencyException|dependency.*error|Depends\\(.*error|injection.*failed"
+      confidence: 0.88
+    
+    secondary_patterns:
+      - regex: "Depends\\(|dependency"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "fastapi.*Depends"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "async.*def|await"
+        weight: 0.3
+        proximity_window: 25
+    
+    severity: "HIGH"
+    category: ["dependency_injection", "runtime"]
+    
+    remediation:
+      description: "FastAPI dependency injection failed"
+      common_causes:
+        - "Dependency function raises unhandled exception"
+        - "Circular dependency references"
+        - "Async/await issues in dependency chain"
+        - "Database connection or external service failures"
+      
+      suggested_commands:
+        - "Add error handling to dependency functions"
+        - "Check for circular dependency imports"
+        - "Ensure proper async/await usage in dependencies"
+        - "Verify external services are available"
+      
+      documentation_links:
+        - "https://fastapi.tiangolo.com/tutorial/dependencies/"
+        - "https://fastapi.tiangolo.com/advanced/async-dependencies/"
+    
+    context_extraction:
+      lines_before: 15
+      lines_after: 10
+      include_stack_trace: true
+
+  - id: "fastapi_async_error"
+    name: "FastAPI Async/Await Error"
+    
+    primary_pattern:
+      regex: "RuntimeError.*cannot be called from a running event loop|asyncio.*error|await.*error|async.*error"
+      confidence: 0.85
+    
+    secondary_patterns:
+      - regex: "async def|await|asyncio"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "event.*loop|coroutine"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "uvicorn|asgi"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "HIGH"
+    category: ["async", "runtime"]
+    
+    remediation:
+      description: "FastAPI async/await operation failed"
+      common_causes:
+        - "Mixing sync and async code incorrectly"
+        - "Event loop already running conflicts"
+        - "Blocking operations in async functions"
+        - "Incorrect coroutine handling"
+      
+      suggested_commands:
+        - "Use async/await consistently in route handlers"
+        - "Use asyncio.create_task() for concurrent operations"
+        - "Avoid blocking I/O in async functions"
+        - "Use async database clients (asyncpg, motor, etc.)"
+      
+      documentation_links:
+        - "https://fastapi.tiangolo.com/async/"
+        - "https://docs.python.org/3/library/asyncio.html"
+    
+    context_extraction:
+      lines_before: 15
+      lines_after: 10
+      include_stack_trace: true
+
+  - id: "fastapi_startup_error"
+    name: "FastAPI Application Startup Error"
+    
+    primary_pattern:
+      regex: "startup.*event.*error|application.*startup.*failed|uvicorn.*startup.*error|server.*failed.*start"
+      confidence: 0.90
+    
+    secondary_patterns:
+      - regex: "uvicorn|hypercorn|gunicorn"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "@app\\.on_event\\(.*startup|startup.*event"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "FastAPI\\(|fastapi.*app"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "CRITICAL"
+    category: ["startup", "server"]
+    
+    remediation:
+      description: "FastAPI application failed to start"
+      common_causes:
+        - "Startup event handler exceptions"
+        - "Database connection failures during startup"
+        - "Port binding conflicts"
+        - "Configuration or environment issues"
+      
+      suggested_commands:
+        - "Check startup event handlers for exceptions"
+        - "Verify database connectivity and credentials"
+        - "Use different port: uvicorn main:app --port 8001"
+        - "Check environment variables and configuration"
+      
+      documentation_links:
+        - "https://fastapi.tiangolo.com/advanced/events/"
+        - "https://www.uvicorn.org/deployment/"
+    
+    context_extraction:
+      lines_before: 15
+      lines_after: 10
+      include_stack_trace: true
+
+  - id: "fastapi_openapi_schema_error"
+    name: "FastAPI OpenAPI Schema Error"
+    
+    primary_pattern:
+      regex: "OpenAPI.*schema.*error|swagger.*error|openapi.*generation.*failed|schema.*validation.*error"
+      confidence: 0.82
+    
+    secondary_patterns:
+      - regex: "openapi|swagger|schema"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "docs|redoc|swagger-ui"
+        weight: 0.4
+        proximity_window: 25
+      - regex: "pydantic.*schema|model.*schema"
+        weight: 0.6
+        proximity_window: 15
+    
+    severity: "LOW"
+    category: ["documentation", "schema"]
+    
+    remediation:
+      description: "FastAPI OpenAPI schema generation failed"
+      common_causes:
+        - "Complex Pydantic models breaking schema generation"
+        - "Recursive model references"
+        - "Invalid OpenAPI metadata"
+        - "Custom schema modifications conflicts"
+      
+      suggested_commands:
+        - "Simplify complex Pydantic model relationships"
+        - "Use schema_extra in model Config for custom schema"
+        - "Check for circular references in models"
+        - "Validate OpenAPI spec manually"
+      
+      documentation_links:
+        - "https://fastapi.tiangolo.com/tutorial/metadata/"
+        - "https://fastapi.tiangolo.com/advanced/extending-openapi/"
+    
+    context_extraction:
+      lines_before: 10
+      lines_after: 5
+
+  - id: "fastapi_middleware_error"
+    name: "FastAPI Middleware Error"
+    
+    primary_pattern:
+      regex: "middleware.*error|CORS.*error|middleware.*exception|add_middleware.*error"
+      confidence: 0.87
+    
+    secondary_patterns:
+      - regex: "add_middleware|middleware"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "CORSMiddleware|cors"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "starlette.*middleware"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "MEDIUM"
+    category: ["middleware", "cors"]
+    
+    remediation:
+      description: "FastAPI middleware processing failed"
+      common_causes:
+        - "CORS configuration errors"
+        - "Middleware ordering conflicts"
+        - "Custom middleware exceptions"
+        - "Authentication middleware failures"
+      
+      suggested_commands:
+        - "Check CORS allowed origins and methods"
+        - "Review middleware order in app.add_middleware() calls"
+        - "Add error handling to custom middleware"
+        - "Verify authentication middleware configuration"
+      
+      documentation_links:
+        - "https://fastapi.tiangolo.com/tutorial/cors/"
+        - "https://fastapi.tiangolo.com/tutorial/middleware/"
+    
+    context_extraction:
+      lines_before: 12
+      lines_after: 8
+      include_stack_trace: true
+
+  - id: "fastapi_database_connection_error"
+    name: "FastAPI Database Connection Error"
+    
+    primary_pattern:
+      regex: "sqlalchemy.*error|database.*connection.*failed|asyncpg.*error|motor.*error|connection.*refused.*database"
+      confidence: 0.89
+    
+    secondary_patterns:
+      - regex: "sqlalchemy|asyncpg|motor|databases"
+        weight: 0.6
+        proximity_window: 20
+      - regex: "DATABASE_URL|db.*connection"
+        weight: 0.5
+        proximity_window: 25
+      - regex: "async.*session|async.*engine"
+        weight: 0.4
+        proximity_window: 15
+    
+    severity: "HIGH"
+    category: ["database", "connectivity"]
+    
+    remediation:
+      description: "FastAPI database connection failed"
+      common_causes:
+        - "Database server not running or unreachable"
+        - "Invalid database connection string"
+        - "Authentication credentials incorrect"
+        - "Connection pool exhaustion"
+      
+      suggested_commands:
+        - "Verify database server is running and accessible"
+        - "Check DATABASE_URL format and credentials"
+        - "Test connection with database client tools"
+        - "Review connection pool settings"
+      
+      documentation_links:
+        - "https://fastapi.tiangolo.com/tutorial/sql-databases/"
+        - "https://docs.sqlalchemy.org/en/14/core/engines.html"
+    
+    context_extraction:
+      lines_before: 15
+      lines_after: 10
+      include_stack_trace: true
+
+  - id: "fastapi_authentication_error"
+    name: "FastAPI Authentication Error"
+    
+    primary_pattern:
+      regex: "HTTPException.*401|Unauthorized|authentication.*failed|token.*invalid|jwt.*error"
+      confidence: 0.86
+    
+    secondary_patterns:
+      - regex: "Bearer|token|jwt|oauth"
+        weight: 0.5
+        proximity_window: 20
+      - regex: "HTTPBearer|OAuth2|Security"
+        weight: 0.6
+        proximity_window: 15
+      - regex: "401|403|Forbidden|Unauthorized"
+        weight: 0.4
+        proximity_window: 25
+    
+    severity: "MEDIUM"
+    category: ["authentication", "security"]
+    
+    remediation:
+      description: "FastAPI authentication failed"
+      common_causes:
+        - "Invalid or expired JWT tokens"
+        - "Missing authorization headers"
+        - "Incorrect token format or signature"
+        - "Authentication dependency configuration issues"
+      
+      suggested_commands:
+        - "Check JWT token format and expiration"
+        - "Verify Authorization header format: 'Bearer <token>'"
+        - "Review authentication dependency implementation"
+        - "Test token generation and validation logic"
+      
+      documentation_links:
+        - "https://fastapi.tiangolo.com/tutorial/security/"
+        - "https://fastapi.tiangolo.com/advanced/security/"
+    
+    context_extraction:
+      lines_before: 12
+      lines_after: 8
+      include_stack_trace: true
+
+related_patterns:
+  - id: "fastapi_validation_error"
+    related_to: ["fastapi_openapi_schema_error"]
+  - id: "fastapi_dependency_error"
+    related_to: ["fastapi_async_error", "fastapi_database_connection_error"]
+  - id: "fastapi_startup_error"
+    related_to: ["fastapi_database_connection_error", "fastapi_middleware_error"]
+  - id: "fastapi_async_error"
+    related_to: ["fastapi_database_connection_error"]
