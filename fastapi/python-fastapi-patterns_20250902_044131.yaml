@@ -1,0 +1,209 @@
+metadata:
+  library_id: python-fastapi-patterns
+  version: 1.0.0
+  maintainer: AI-GENERATED
+  compatibility: []
+  dependencies: []
+  generated: '2025-09-02T04:41:31.297941'
+categories:
+- close_code
+- closed_event
+- connection
+- decode
+- exception
+- handshake
+- infrastructure
+- network
+- protocol
+- read_timeout
+- websocket
+- write_timeout
+patterns:
+- id: fastapi_websocket_connection_error
+  name: Fastapi WebSocket Connection Error
+  description: Catches errors related to WebSocket connections in fastapi applications
+  primary_pattern:
+    regex: Websocket connection error.*
+    confidence: 0.95
+  severity: HIGH
+  category:
+  - websocket
+  - connection
+  - network
+  remediation:
+    description: This error occurs when there's a problem with the WebSocket connection.
+    common_causes:
+    - Incorrect WebSocket URL
+    - Network issues
+    suggested_commands:
+    - Verify the WebSocket URL
+    - Check network connectivity
+    documentation_links: []
+- id: fastapi_websocket_handshake_error
+  name: Fastapi WebSocket Handshake Error
+  description: Catches errors related to WebSocket handshake failures in fastapi applications
+  primary_pattern:
+    regex: WebSocket handshake error.*
+    confidence: 0.8
+  severity: MEDIUM
+  category:
+  - websocket
+  - handshake
+  - infrastructure
+  remediation:
+    description: This error occurs when the WebSocket handshake fails.
+    common_causes:
+    - Incorrect headers
+    - Missing required fields
+    suggested_commands:
+    - Check headers and required fields
+    - Verify infrastructure configuration
+    documentation_links: []
+- id: fastapi_websocket_protocol_error
+  name: Fastapi WebSocket Protocol Error
+  description: Catches errors related to WebSocket protocol issues in fastapi applications
+  primary_pattern:
+    regex: WebSocket protocol error.*
+    confidence: 0.95
+  severity: HIGH
+  category:
+  - websocket
+  - protocol
+  - infrastructure
+  remediation:
+    description: This error occurs when there's a problem with the WebSocket protocol.
+    common_causes:
+    - Incorrect protocol version
+    - Unsupported extensions
+    suggested_commands:
+    - Check protocol version and supported extensions
+    - Verify infrastructure configuration
+    documentation_links: []
+- id: fastapi_websocket_decode_error
+  name: Fastapi WebSocket Decode Error
+  description: Catches errors related to WebSocket message decoding failures in fastapi
+    applications
+  primary_pattern:
+    regex: WebSocket decode error.*
+    confidence: 0.8
+  severity: MEDIUM
+  category:
+  - websocket
+  - decode
+  - infrastructure
+  remediation:
+    description: This error occurs when the WebSocket message cannot be decoded.
+    common_causes:
+    - Corrupted or malformed messages
+    - Incorrect decoding
+    suggested_commands:
+    - Check message integrity and format
+    - Verify infrastructure configuration
+    documentation_links: []
+- id: fastapi_websocket_closed_event_error
+  name: Fastapi WebSocket Closed Event Error
+  description: Catches errors related to WebSocket closed event issues in fastapi
+    applications
+  primary_pattern:
+    regex: WebSocket closed event error.*
+    confidence: 0.8
+  severity: MEDIUM
+  category:
+  - websocket
+  - closed_event
+  - infrastructure
+  remediation:
+    description: This error occurs when there's a problem with the WebSocket closed
+      event.
+    common_causes:
+    - Unexpected or missing closed events
+    - Incorrect event handling
+    suggested_commands:
+    - Check event handling and close logic
+    - Verify infrastructure configuration
+    documentation_links: []
+- id: fastapi_websocket_read_timeout_error
+  name: Fastapi WebSocket Read Timeout Error
+  description: Catches errors related to WebSocket read timeout issues in fastapi
+    applications
+  primary_pattern:
+    regex: WebSocket read timeout error.*
+    confidence: 0.95
+  severity: HIGH
+  category:
+  - websocket
+  - read_timeout
+  - infrastructure
+  remediation:
+    description: This error occurs when the WebSocket read operation times out.
+    common_causes:
+    - Insufficient network resources
+    - Incorrect timeout settings
+    suggested_commands:
+    - Check network resources and timeout settings
+    - Verify infrastructure configuration
+    documentation_links: []
+- id: fastapi_websocket_write_timeout_error
+  name: Fastapi WebSocket Write Timeout Error
+  description: Catches errors related to WebSocket write timeout issues in fastapi
+    applications
+  primary_pattern:
+    regex: WebSocket write timeout error.*
+    confidence: 0.95
+  severity: HIGH
+  category:
+  - websocket
+  - write_timeout
+  - infrastructure
+  remediation:
+    description: This error occurs when the WebSocket write operation times out.
+    common_causes:
+    - Insufficient network resources
+    - Incorrect timeout settings
+    suggested_commands:
+    - Check network resources and timeout settings
+    - Verify infrastructure configuration
+    documentation_links: []
+- id: fastapi_websocket_exception_error
+  name: Fastapi WebSocket Exception Error
+  description: Catches errors related to WebSocket exception handling failures in
+    fastapi applications
+  primary_pattern:
+    regex: WebSocket exception error.*
+    confidence: 0.8
+  severity: MEDIUM
+  category:
+  - websocket
+  - exception
+  - infrastructure
+  remediation:
+    description: This error occurs when there's a problem with the WebSocket exception
+      handling.
+    common_causes:
+    - Incorrect exception handling
+    - Missing or incorrect exception filters
+    suggested_commands:
+    - Check exception handling and filters
+    - Verify infrastructure configuration
+    documentation_links: []
+- id: fastapi_websocket_close_code_error
+  name: Fastapi WebSocket Close Code Error
+  description: Catches errors related to WebSocket close code issues in fastapi applications
+  primary_pattern:
+    regex: WebSocket close code error.*
+    confidence: 0.8
+  severity: MEDIUM
+  category:
+  - websocket
+  - close_code
+  - infrastructure
+  remediation:
+    description: This error occurs when there's a problem with the WebSocket close
+      code.
+    common_causes:
+    - Incorrect or missing close codes
+    - Unsupported close codes
+    suggested_commands:
+    - Check close codes and their usage
+    - Verify infrastructure configuration
+    documentation_links: []
