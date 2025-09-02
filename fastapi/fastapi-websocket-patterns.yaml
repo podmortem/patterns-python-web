@@ -1,0 +1,220 @@
+metadata:
+  library_id: python-fastapi-patterns
+  version: 1.0.0
+  maintainer: AI-GENERATED
+  compatibility: []
+  dependencies: []
+  generated: '2025-09-02T05:59:17.618214'
+categories:
+- authentication
+- broadcasting
+- client
+- connection
+- disconnect
+- disconnection
+- handler
+- infrastructure
+- message
+- state
+- timeout
+- upgrade
+- websocket
+patterns:
+- id: fastapi_websocket_connection_error
+  name: WebSocket Connection Error
+  description: Catches errors related to WebSocket connection failures
+  primary_pattern:
+    regex: WebSocket connection error\s+:\s+ConnectionError
+    confidence: 0.9
+  severity: MEDIUM
+  category:
+  - websocket
+  - connection
+  - infrastructure
+  remediation:
+    description: Check if the server is running and the port is correct. Verify that
+      the WebSocket connection is properly configured.
+    common_causes:
+    - Server not running
+    - Incorrect port
+    - Misconfigured WebSocket connection
+    suggested_commands:
+    - Check server status
+    - Verify port configuration
+    - Check WebSocket connection settings
+    documentation_links: []
+- id: fastapi_websocket_disconnect_exception
+  name: WebSocket Disconnect Exception
+  description: Catches WebSocketDisconnect exceptions in FastAPI applications
+  primary_pattern:
+    regex: WebSocketDisconnect\s+:\s+.*
+    confidence: 0.8
+  severity: MEDIUM
+  category:
+  - websocket
+  - disconnect
+  - infrastructure
+  remediation:
+    description: This error occurs when the client disconnects unexpectedly. Check
+      if the client is properly configured and if the server is handling disconnections
+      correctly.
+    common_causes:
+    - Client disconnection
+    - Server not handling disconnections correctly
+    suggested_commands:
+    - Check client configuration
+    - Verify server disconnection handling
+    documentation_links: []
+- id: fastapi_connection_upgrade_error
+  name: Connection Upgrade Error
+  description: Catches errors related to connection upgrade failures in FastAPI applications
+  primary_pattern:
+    regex: Connection upgrade error\s+:\s+.*
+    confidence: 0.7
+  severity: MEDIUM
+  category:
+  - connection
+  - upgrade
+  - infrastructure
+  remediation:
+    description: This error occurs when the connection upgrade fails. Check if the
+      server is running and if the connection upgrade is properly configured.
+    common_causes:
+    - Server not running
+    - Incorrect connection upgrade configuration
+    suggested_commands:
+    - Check server status
+    - Verify connection upgrade settings
+    documentation_links: []
+- id: fastapi_websocket_authentication_failure
+  name: WebSocket Authentication Failure
+  description: Catches authentication failures related to WebSocket connections in
+    FastAPI applications
+  primary_pattern:
+    regex: Authentication failed\s+:\s+.*WebSocket authentication failed\s+:\s+.*
+    confidence: 0.9
+  severity: HIGH
+  category:
+  - websocket
+  - authentication
+  - infrastructure
+  remediation:
+    description: This error occurs when the authentication fails. Check if the authentication
+      settings are correct and if the client is properly authenticated.
+    common_causes:
+    - Incorrect authentication settings
+    - Client not properly authenticated
+    suggested_commands:
+    - Check authentication settings
+    - Verify client authentication
+    documentation_links: []
+- id: fastapi_connection_timeout_error
+  name: Connection Timeout Error
+  description: Catches connection timeout errors in FastAPI applications
+  primary_pattern:
+    regex: Connection timeout\s+:\s+.*Connection timeout error\s+:\s+.*
+    confidence: 0.8
+  severity: CRITICAL
+  category:
+  - connection
+  - timeout
+  - infrastructure
+  remediation:
+    description: This error occurs when the connection times out. Check if the connection
+      timeout is properly configured and if the server is running correctly.
+    common_causes:
+    - Incorrect connection timeout configuration
+    - Server not running correctly
+    suggested_commands:
+    - Check connection timeout settings
+    - Verify server status
+    documentation_links: []
+- id: fastapi_async_websocket_handler_exception
+  name: Async WebSocket Handler Exception
+  description: Catches exceptions related to async WebSocket handler in FastAPI applications
+  primary_pattern:
+    regex: Async WebSocket handler exception\s+:\s+.*Exception in WebSocket handler\s+:\s+.*
+    confidence: 0.7
+  severity: MEDIUM
+  category:
+  - websocket
+  - handler
+  - infrastructure
+  remediation:
+    description: This error occurs when an exception occurs in the async WebSocket
+      handler. Check if the handler is properly configured and if the exception is
+      properly handled.
+    common_causes:
+    - Incorrect handler configuration
+    - Exception not properly handled
+    suggested_commands:
+    - Check handler settings
+    - Verify exception handling
+    documentation_links: []
+- id: fastapi_websocket_state_management_error
+  name: WebSocket State Management Error
+  description: Catches errors related to WebSocket state management in FastAPI applications
+  primary_pattern:
+    regex: WebSocket state management error\s+:\s+.*Error managing WebSocket state\s+:\s+.*
+    confidence: 0.6
+  severity: MEDIUM
+  category:
+  - websocket
+  - state
+  - infrastructure
+  remediation:
+    description: This error occurs when there is an issue managing the WebSocket state.
+      Check if the state management is properly configured and if the server is running
+      correctly.
+    common_causes:
+    - Incorrect state management configuration
+    - Server not running correctly
+    suggested_commands:
+    - Check state management settings
+    - Verify server status
+    documentation_links: []
+- id: fastapi_client_disconnection_handling_error
+  name: Client Disconnection Handling Error
+  description: Catches errors related to client disconnection handling in FastAPI
+    applications
+  primary_pattern:
+    regex: Client disconnection handling error\s+:\s+.*Error handling client disconnection\s+:\s+.*
+    confidence: 0.5
+  severity: MEDIUM
+  category:
+  - client
+  - disconnection
+  - infrastructure
+  remediation:
+    description: This error occurs when there is an issue handling client disconnections.
+      Check if the disconnection handling is properly configured and if the server
+      is running correctly.
+    common_causes:
+    - Incorrect disconnection handling configuration
+    - Server not running correctly
+    suggested_commands:
+    - Check disconnection handling settings
+    - Verify server status
+    documentation_links: []
+- id: fastapi_message_broadcasting_issue
+  name: Message Broadcasting Issue
+  description: Catches issues related to message broadcasting in FastAPI applications
+  primary_pattern:
+    regex: Message broadcasting issue\s+:\s+.*Error broadcasting message\s+:\s+.*
+    confidence: 0.4
+  severity: MEDIUM
+  category:
+  - message
+  - broadcasting
+  - infrastructure
+  remediation:
+    description: This error occurs when there is an issue broadcasting messages. Check
+      if the message broadcasting is properly configured and if the server is running
+      correctly.
+    common_causes:
+    - Incorrect message broadcasting configuration
+    - Server not running correctly
+    suggested_commands:
+    - Check message broadcasting settings
+    - Verify server status
+    documentation_links: []
