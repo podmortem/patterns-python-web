@@ -4,16 +4,21 @@ metadata:
   maintainer: AI-GENERATED
   compatibility: []
   dependencies: []
-  generated: '2025-09-04T01:01:15.654885'
+  generated: '2025-09-04T01:02:39.537847'
+  source: merged (None + None)
 categories:
 - async
 - authentication
+- broadcast
 - broadcasting
 - client
 - connection
 - disconnect
 - disconnection
+- exception
+- failure
 - infrastructure
+- management
 - message
 - network
 - state
@@ -209,4 +214,97 @@ patterns:
     suggested_commands:
     - Verify WebSocket state management status
     - Check client WebSocket state management logic
+    documentation_links: []
+- id: fastapi_websocketdisconnect_exception
+  name: FastAPI WebSocket Disconnect Exception
+  description: Catches WebSocketDisconnect exceptions in FastAPI
+  primary_pattern:
+    regex: (?i)websocketdisconnect|websocket close|websocket exception
+    confidence: 0.95
+  severity: HIGH
+  category:
+  - websocket
+  - disconnect
+  - exception
+  remediation:
+    description: Handle WebSocketDisconnect exceptions properly and provide a suitable
+      error message to the client.
+    common_causes:
+    - Invalid WebSocket messages or data
+    - Client-side WebSocket issues
+    - Server-side WebSocket handling problems
+    suggested_commands:
+    - Review and validate WebSocket messages and data
+    - Check client-side WebSocket settings and configuration
+    - Inspect server-side WebSocket handling and error handling
+    documentation_links: []
+- id: fastapi_message_broadcasting_issue
+  name: FastAPI Message Broadcasting Issue
+  description: Catches issues related to broadcasting messages over WebSockets
+  primary_pattern:
+    regex: (?i)message broadcasting error|message broadcast failed|broadcast timeout
+    confidence: 0.85
+  severity: HIGH
+  category:
+  - websocket
+  - message
+  - broadcast
+  remediation:
+    description: Handle message broadcasting issues properly and provide a suitable
+      error message to the client.
+    common_causes:
+    - Invalid message data or format
+    - Client-side message handling issues
+    - Server-side message broadcasting problems
+    suggested_commands:
+    - Review and validate message data and format
+    - Check client-side message handling and settings
+    - Inspect server-side message broadcasting and error handling
+    documentation_links: []
+- id: fastapi_websocket_authentication_failure
+  name: FastAPI WebSocket Authentication Failure
+  description: Catches authentication failures related to WebSockets
+  primary_pattern:
+    regex: (?i)authentication error|authentication failed|auth timeout
+    confidence: 0.9
+  severity: CRITICAL
+  category:
+  - websocket
+  - authentication
+  - failure
+  remediation:
+    description: Verify authentication settings and credentials, and ensure proper
+      authentication mechanisms are in place.
+    common_causes:
+    - Incorrect authentication settings or credentials
+    - Invalid authentication mechanisms or configurations
+    - Server-side authentication handling problems
+    suggested_commands:
+    - Check authentication settings and credentials
+    - Review and validate authentication mechanisms and configurations
+    - Inspect server-side authentication handling and error handling
+    documentation_links: []
+- id: fastapi_async_websocket_handler_exception
+  name: FastAPI Async WebSocket Handler Exception
+  description: Catches exceptions in async WebSocket handlers in FastAPI
+  primary_pattern:
+    regex: (?i)async websocket handler exception|async handler error|async exception
+      occurred
+    confidence: 0.95
+  severity: HIGH
+  category:
+  - websocket
+  - async
+  - exception
+  remediation:
+    description: Handle async WebSocket handler exceptions properly and provide a
+      suitable error message to the client.
+    common_causes:
+    - Invalid async handler code or logic
+    - Async handler configuration or settings issues
+    - Server-side async handler problems or configurations
+    suggested_commands:
+    - Review and validate async handler code and logic
+    - Check async handler configuration and settings
+    - Inspect server-side async handler and error handling
     documentation_links: []
