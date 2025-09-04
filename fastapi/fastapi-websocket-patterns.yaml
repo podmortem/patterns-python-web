@@ -4,8 +4,8 @@ metadata:
   maintainer: AI-GENERATED
   compatibility: []
   dependencies: []
-  generated: '2025-09-04T01:02:39.537847'
-  source: merged (None + None)
+  generated: '2025-09-04T01:04:23.564564'
+  source: merged (merged (None + None) + None)
 categories:
 - async
 - authentication
@@ -307,4 +307,25 @@ patterns:
     - Review and validate async handler code and logic
     - Check async handler configuration and settings
     - Inspect server-side async handler and error handling
+    documentation_links: []
+- id: fastapi_websocket_disconnect_error
+  name: FastAPI WebSocket Disconnect Error
+  description: Catches WebSocket disconnect errors in FastAPI applications
+  primary_pattern:
+    regex: WebSocket disconnect error\s*\((\w+)\)
+    confidence: 0.85
+  severity: MEDIUM
+  category:
+  - websocket
+  - disconnect
+  - infrastructure
+  remediation:
+    description: Verify client disconnection handling and ensure the WebSocket connection
+      is properly closed.
+    common_causes:
+    - Incorrect client disconnection handling
+    - WebSocket connection issues
+    suggested_commands:
+    - Check client disconnection handling in the FastAPI application
+    - Verify WebSocket connection and ensure it is properly closed
     documentation_links: []
