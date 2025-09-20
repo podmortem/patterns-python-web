@@ -1,0 +1,207 @@
+metadata:
+  library_id: python-fastapi-patterns
+  version: 1.0.0
+  maintainer: AI-GENERATED
+  compatibility: []
+  dependencies: []
+  generated: '2025-09-20T06:11:03.030778'
+categories:
+- application
+- authentication
+- authorization
+- connection
+- database
+- dependency
+- error
+- injection
+- internal
+- network
+- openapi
+- request
+- schema
+- server
+- startup
+- timeout
+- validation
+patterns:
+- id: fastapi_connection_timeout
+  name: FastAPI Connection Timeout Error
+  description: Catches connection timeout errors in fastapi applications
+  primary_pattern:
+    regex: Connection timeout occurred
+    confidence: 0.95
+  severity: HIGH
+  category:
+  - network
+  - timeout
+  - connection
+  remediation:
+    description: This error occurs when the connection to the database or another
+      service times out.
+    common_causes:
+    - Database connection issues
+    - Network problems
+    suggested_commands:
+    - Check database connection settings
+    - Verify network connectivity
+    documentation_links: []
+- id: fastapi_invalid_request
+  name: FastAPI Invalid Request Error
+  description: Catches invalid request errors in fastapi applications
+  primary_pattern:
+    regex: Invalid request:.*
+    confidence: 0.8
+  severity: MEDIUM
+  category:
+  - request
+  - validation
+  - error
+  remediation:
+    description: This error occurs when the request is invalid or malformed.
+    common_causes:
+    - Invalid request body
+    - Missing required parameters
+    suggested_commands:
+    - Check request body for validity
+    - Verify required parameters are present
+    documentation_links: []
+- id: fastapi_authentication_error
+  name: FastAPI Authentication Error
+  description: Catches authentication errors in fastapi applications
+  primary_pattern:
+    regex: Authentication failed
+    confidence: 0.9
+  severity: HIGH
+  category:
+  - authentication
+  - authorization
+  - error
+  remediation:
+    description: This error occurs when the user is not authenticated or authorized.
+    common_causes:
+    - Invalid username or password
+    - Expired or invalid token
+    suggested_commands:
+    - Check username and password
+    - Verify token expiration
+    documentation_links: []
+- id: fastapi_database_connection_error
+  name: FastAPI Database Connection Error
+  description: Catches database connection errors in fastapi applications
+  primary_pattern:
+    regex: Database connection error
+    confidence: 0.95
+  severity: CRITICAL
+  category:
+  - database
+  - connection
+  - error
+  remediation:
+    description: This error occurs when the database connection is lost or refused.
+    common_causes:
+    - Database connection issues
+    - Network problems
+    suggested_commands:
+    - Check database connection settings
+    - Verify network connectivity
+    documentation_links: []
+- id: fastapi_openapi_schema_error
+  name: FastAPI OpenAPI Schema Error
+  description: Catches OpenAPI schema errors in fastapi applications
+  primary_pattern:
+    regex: OpenAPI schema error
+    confidence: 0.8
+  severity: MEDIUM
+  category:
+  - openapi
+  - schema
+  - error
+  remediation:
+    description: This error occurs when the OpenAPI schema is invalid or malformed.
+    common_causes:
+    - Invalid schema definition
+    - Missing required fields
+    suggested_commands:
+    - Check schema definition for validity
+    - Verify required fields are present
+    documentation_links: []
+- id: fastapi_dependency_injection_error
+  name: FastAPI Dependency Injection Error
+  description: Catches dependency injection errors in fastapi applications
+  primary_pattern:
+    regex: Dependency injection error
+    confidence: 0.9
+  severity: HIGH
+  category:
+  - dependency
+  - injection
+  - error
+  remediation:
+    description: This error occurs when the dependency injection is not properly configured.
+    common_causes:
+    - Invalid dependency definition
+    - Missing required dependencies
+    suggested_commands:
+    - Check dependency definition for validity
+    - Verify required dependencies are present
+    documentation_links: []
+- id: fastapi_application_startup_error
+  name: FastAPI Application Startup Error
+  description: Catches application startup errors in fastapi applications
+  primary_pattern:
+    regex: Application startup error
+    confidence: 0.95
+  severity: CRITICAL
+  category:
+  - application
+  - startup
+  - error
+  remediation:
+    description: This error occurs when the application fails to start properly.
+    common_causes:
+    - Invalid configuration settings
+    - Missing required dependencies
+    suggested_commands:
+    - Check configuration settings for validity
+    - Verify required dependencies are present
+    documentation_links: []
+- id: fastapi_request_timeout_error
+  name: FastAPI Request Timeout Error
+  description: Catches request timeout errors in fastapi applications
+  primary_pattern:
+    regex: Request timeout occurred
+    confidence: 0.85
+  severity: HIGH
+  category:
+  - request
+  - timeout
+  - error
+  remediation:
+    description: This error occurs when the request times out.
+    common_causes:
+    - Database connection issues
+    - Network problems
+    suggested_commands:
+    - Check database connection settings
+    - Verify network connectivity
+    documentation_links: []
+- id: fastapi_internal_server_error
+  name: FastAPI Internal Server Error
+  description: Catches internal server errors in fastapi applications
+  primary_pattern:
+    regex: Internal Server Error
+    confidence: 0.95
+  severity: CRITICAL
+  category:
+  - server
+  - internal
+  - error
+  remediation:
+    description: This error occurs when the server encounters an unexpected condition.
+    common_causes:
+    - Invalid configuration settings
+    - Missing required dependencies
+    suggested_commands:
+    - Check configuration settings for validity
+    - Verify required dependencies are present
+    documentation_links: []
