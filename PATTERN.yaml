@@ -1,0 +1,27 @@
+name: "Python Web Framework Patterns"
+version: "1.0.0"
+description: "Comprehensive error patterns for Python web frameworks including FastAPI, Django, Flask, and async patterns"
+author: "Podmortem Community"
+
+languages:
+  - python
+
+frameworks:
+  - fastapi
+  - django
+  - flask
+  - async
+
+focuses:
+  - "HTTP request/response error handling"
+  - "Database ORM error patterns"
+  - "Authentication and authorization failures"
+  - "Validation and serialization errors"
+  - "Async/await error handling"
+  - "WebSocket connection issues"
+  - "Middleware and dependency injection failures"
+  - "Template rendering errors"
+  - "API endpoint error responses"
+  - "Background task error handling"
+
+
