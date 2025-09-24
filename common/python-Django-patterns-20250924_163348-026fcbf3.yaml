@@ -1,0 +1,180 @@
+metadata:
+  library_id: python-Django-patterns
+  version: 1.0.0
+  maintainer: AI-GENERATED
+  compatibility: []
+  dependencies: []
+  generated: '2025-09-24T16:33:48.916641'
+categories:
+- connection
+- constraints
+- database
+- does_not_exist
+- error
+- http
+- infrastructure
+- integrity
+- invalid
+- middleware
+- model
+- network
+- rendering
+- request
+- syntax
+- template
+- timeout
+patterns:
+- id: django_database_connection_error
+  name: Django Database Connection Error
+  description: Catches database connection errors in Django applications
+  primary_pattern:
+    regex: OperationalError|ConnectionResetError|ConnectionAbortedError
+    confidence: 0.95
+  severity: HIGH
+  category:
+  - database
+  - connection
+  - infrastructure
+  remediation:
+    description: This error occurs when the database connection is lost or refused.
+    common_causes:
+    - Database server down or unreachable
+    - Network connectivity issues
+    - Incorrect database credentials
+    suggested_commands:
+    - Check database server status
+    - Verify network connectivity
+    - Check database credentials
+    documentation_links: []
+- id: django_template_syntax_error
+  name: Django Template Syntax Error
+  description: Catches template syntax errors in Django applications
+  primary_pattern:
+    regex: TemplateSyntaxError|TemplateDoesNotExist|TemplateHasNoEngine
+    confidence: 0.9
+  severity: HIGH
+  category:
+  - template
+  - syntax
+  - rendering
+  remediation:
+    description: This error occurs when there is a syntax error in a template.
+    common_causes:
+    - Typo in template code
+    - Incorrect template syntax
+    - Missing template engine
+    suggested_commands:
+    - Check template code for typos
+    - Verify template syntax
+    - Check if template engine is installed
+    documentation_links: []
+- id: django_middleware_error
+  name: Django Middleware Error
+  description: Catches middleware errors in Django applications
+  primary_pattern:
+    regex: MiddlewareDoesNotExist|MiddlewareNotImplemented|MiddlewareError
+    confidence: 0.95
+  severity: HIGH
+  category:
+  - middleware
+  - error
+  - request
+  remediation:
+    description: This error occurs when there is an issue with a middleware.
+    common_causes:
+    - Middleware not installed or configured correctly
+    - Middleware not implemented correctly
+    - Middleware error occurred during request processing
+    suggested_commands:
+    - Check middleware installation and configuration
+    - Verify middleware implementation
+    - Check request processing logs
+    documentation_links: []
+- id: django_model_does_not_exist
+  name: Django Model Does Not Exist Error
+  description: Catches model does not exist errors in Django applications
+  primary_pattern:
+    regex: DoesNotExist|ModelDoesNotExist|ObjectDoesNotExist
+    confidence: 0.85
+  severity: MEDIUM
+  category:
+  - model
+  - does_not_exist
+  - database
+  remediation:
+    description: This error occurs when a model instance does not exist.
+    common_causes:
+    - Model instance does not exist in database
+    - Model instance was deleted or removed
+    - Model instance was not created correctly
+    suggested_commands:
+    - Check if model instance exists in database
+    - Verify model instance creation process
+    - Check for any recent changes to model instance
+    documentation_links: []
+- id: django_database_integrity_error
+  name: Django Database Integrity Error
+  description: Catches database integrity errors in Django applications
+  primary_pattern:
+    regex: IntegrityError|DatabaseIntegrityError|ConstraintError
+    confidence: 0.95
+  severity: HIGH
+  category:
+  - database
+  - integrity
+  - constraints
+  remediation:
+    description: This error occurs when there is an issue with database integrity.
+    common_causes:
+    - Database constraints are not met
+    - Database integrity is compromised due to data corruption or inconsistencies
+    - Database schema is not correctly defined or implemented
+    suggested_commands:
+    - Check database constraints and schema definition
+    - Verify database data integrity and consistency
+    - Check for any recent changes to database schema or data
+    documentation_links: []
+- id: django_connection_timeout
+  name: Django Connection Timeout Error
+  description: Catches connection timeout errors in Django applications
+  primary_pattern:
+    regex: ConnectionTimeout|TimeoutError|ConnectionTimeoutError
+    confidence: 0.9
+  severity: HIGH
+  category:
+  - connection
+  - timeout
+  - network
+  remediation:
+    description: This error occurs when there is a timeout issue with a connection.
+    common_causes:
+    - Connection timeout is set too low or too high
+    - Network connectivity issues or latency problems
+    - Server-side or client-side timeout issues
+    suggested_commands:
+    - Check connection timeout settings and adjust as needed
+    - Verify network connectivity and latency issues
+    - Check server-side and client-side timeout settings
+    documentation_links: []
+- id: django_invalid_http_request
+  name: Django Invalid HTTP Request Error
+  description: Catches invalid HTTP request errors in Django applications
+  primary_pattern:
+    regex: InvalidHTTPMethod|InvalidHttpRequest|InvalidRequestMethodError
+    confidence: 0.85
+  severity: MEDIUM
+  category:
+  - http
+  - request
+  - invalid
+  remediation:
+    description: This error occurs when there is an issue with an HTTP request.
+    common_causes:
+    - Invalid HTTP method used (e.g., GET, POST, PUT, DELETE)
+    - Invalid request headers or body used (e.g., missing or malformed)
+    - Request parameters are not correctly formatted or encoded (e.g., URL encoding
+      issues)
+    suggested_commands:
+    - Check HTTP method and request headers/body for correctness and validity
+    - Verify request parameters are correctly formatted and encoded
+    documentation_links: []
